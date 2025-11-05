@@ -1,0 +1,280 @@
+ +----------------------+
+
+
++-------------------------+
+|     Start Program       |
++-------------------------+
+            |
++-------------------------------------------+
+| Login as:                                 |
+| [1] Admin   [2] User   [3] Mechanic Login |
++-------------------------------------------+
+      |             |                |
+      v             v                v
++-------------+  +-------------+  +-------------+
+| Admin Login |  | User Login  |  | Mechanic    |
+| Verified?   |  | Verified?   |  | Login       |
++-------------+  +-------------+  | Verified?   |
+   | Yes           | Yes          +-------------+
+   v               v                   | Yes
++----------------+  +----------------+ v
+| Admin Dashboard|  | User Dashboard | +------------------+
++----------------+  +----------------+ | Mechanic Dashboard|
+| 1. Manage Users|  | 1. View/Update | +------------------+
+| 2. Vehicles    |  |    Profile     | | 1. View Assigned |
+| 3. Bookings    |  | 2. Add Vehicle | |    Jobs          |
+| 4. Mechanics   |  | 3. View/Edit/  | | 2. Update Job    |
+| 5. Inventory   |  |    Delete      | |    Status        |
+| 6. Invoices    |  |    Vehicle     | | 3. Update Service|
+| 7. Feedback    |  | 4. Browse      | |    Description   |
+| 8. Reports     |  |    Services    | |    & Work Type   |
++----------------+  |    - Check Price| | 4. Job History   |
+                    |    - Est. Hours | |    Completed /   |
+                    |    - Warranty   | |    Incomplete    |
+                    | 5. Book Service | | 5. Parts Request |
+                    | 6. Make Payment | +------------------+
+                    | 7. View Booking |
+                    |    History      |
+                    | 8. Track Order  |
+                    | 9. Cancel Order |
+                    |10. View/Download|
+                    |    Invoice      |
+                    |11. Check Payment|
+                    |    Status       |
+                    |12. Feedback     |
+                    +-----------------+
+
+
+#SQL TABLE STRUCTURE
+
++---------------------+
+|       users         |
++---------------------+
+| user_id (PK)        |
+| name                |
+| username (UNIQUE)   |
+| email (UNIQUE)      |
+| phone               |
+| address             |
+| city                |
+| state               |
+| password            |
+| user_role (ENUM)    |
+| registered_at       |
++---------------------+
+         |
+         | 1-to-many
+         v
++---------------------+
+|      vehicles       |
++---------------------+
+| vehicle_no (PK)     |
+| vehicle_brand       |
+| model               |
+| type (ENUM)         |
+| user_id (FK)        |
++---------------------+
+         |
+         | 1-to-many
+         v
++---------------------+      +---------------------+
+| service_bookings    |      |     services        |
++---------------------+      +---------------------+
+| booking_id (PK)     |<---->| service_id (PK)     |
+| vehicle_no (FK)     |      | service_name        |
+| service_id (FK)     |      | description         |
+| booking_date        |      | base_price          |
+| status (ENUM)       |      | estimated_hours     |
++---------------------+      | warranty_months     |
+         |                   | category (ENUM)     |
+         |                   | status (ENUM)       |
+         v                   | created_at          |
++---------------------+      +---------------------+
+| mechanic_assignments|
++---------------------+
+| assignment_id (PK)  |
+| booking_id (FK)     |
+| mechanic_id (FK)    |
+| assigned_date       |
++---------------------+
+         ^
+         |
++---------------------+
+|  mechanics_info     |
++---------------------+
+| mechanic_id (PK)    |
+| full_name           |
+| specialization      |
+| phone               |
+| email               |
++---------------------+
+
++---------------------+
+|      invoices       |
++---------------------+
+| invoice_id (PK)     |
+| booking_id (FK)     |
+| user_id (FK)        |
+| amount              |
+| payment_status      |
+| payment_method      |
+| invoice_date        |
++---------------------+
+
++---------------------+
+|  parts_inventory    |
++---------------------+
+| part_id (PK)        |
+| part_name           |
+| description         |
+| unit_price          |
+| stock_quantity      |
+| supplier            |
++---------------------+
+
++---------------------+
+|      feedback       |
++---------------------+
+| feedback_id (PK)    |
+| booking_id (FK)     |
+| rating (1-5)        |
+| comments            |
+| created_at          |
++---------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                         +-------------------------+
+                         |     Start Program       |
+                         +-------------------------+
+                                   |
+                         +-------------------------+
+                         |    Login as:            |
+                         | [1] Admin   [2] User    |
+                         +-------------------------+
+                             /               \
+                            v                 v
+               +-------------------+   +---------------------+
+               |   Admin Panel     |   |     User Panel      |
+               +-------------------+   +---------------------+
+               | 1. Add Services   |   | 1. Book Service      |
+               | 2. Add Mechanic   |   | 2. View Booking      |
+               | 3. Assign Task    |   | 3. Cancel Booking    |
+               | 4. Update Status  |   | 4. Service History   |
+               | 5. View Reports   |   | 5. Rate Mechanic     |
+               | 6. View Feedback  |   | 6. Submit Feedback   |
+               | 7. Generate Stats |   | 7. Download Invoice  |
+               +-------------------+   +---------------------+
+                             \                 /
+                              v               v
+                    +-------------------------------+
+                    |    Database (MySQL)           |
+                    | Tables: users, bookings,      |
+                    | services, mechanics,          |
+                    | feedback, ratings, invoices   |
+                    +-------------------------------+
+                              |
+                              v
+                 +-----------------------------+
+                 | Pandas + Graphs + Invoices  |
+                 | - Booking Trends            |
+                 | - Service Distribution      |
+                 | - Mechanic Load             |
+                 | - PDF Invoice               |
+                 +-----------------------------+
+                              |
+                              v
+                       +-----------------+
+                       |   Logout / Exit |
+                       +-----------------+
+
+
+vehicle_service_center/
+├── main.py                     # Entry point
+├── db/
+│   └── db_config.py            # MySQL connection settings
+│   └── db_setup.sql            # SQL script to create tables
+├── models/
+│   ├── user.py                 # User registration/login
+│   ├── admin.py                # Admin operations
+│   ├── vehicle.py              # Vehicle info CRUD
+│   ├── booking.py              # Booking services
+│   ├── mechanic.py             # Mechanic assignment
+│   └── service.py              # Service details, status update
+├── reports/
+│   ├── booking_report.py       # Booking list using pandas
+│   ├── mechanic_workload.py    # Tasks per mechanic
+│   ├── service_status.py       # Pending/Completed services
+│   └── user_history.py         # Past services by user
+├── utils/
+│   └── validators.py           # Input checks, etc.
+│   └── menu.py                 # Admin/User menu display
+├── README.md
+
+TABLES:Table Name	Description
+users                     	Login info for users/admins (with role flag)
+vehicles                   	Stores vehicle info (model, number, type, user_id FK)
+services                   	Stores service types (e.g., oil change, repair)
+service_bookings          	Booking records: vehicle, service type, date, status
+mechanics                  	Mechanic info; assigned to bookings
+feedback                   	User feedback on completed services

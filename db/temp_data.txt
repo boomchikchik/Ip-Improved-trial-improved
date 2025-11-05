@@ -1,0 +1,604 @@
+-- ++++++++++++=========INSTRUCTIONS======================================= 
+
+-- JUST COPY AND PASTE IT WHOLE
+-- BEFORE PASTING THIS ENSURE THAT YOU HAVE RUN THE PROGRAM AT LEAST ONCE SO THAT TABLES HAVE BEEN CREATED 
+
+
+
+
+
+
+START TRANSACTION;
+
+-- ================= USERS =================
+INSERT INTO users (user_id, name, username, email, phone, address, city, state, password, user_role, registered_at) VALUES
+(1,'Admin Mehul','admin','admin@garage.com','9876543210','Main Street 10','Mumbai','Maharashtra','admin123','Admin',NOW()),
+(2,'Ravi Sharma','ravi12','ravi@example.com','9876501234','22 Park Road','Delhi','Delhi','pass123','Customer',NOW()),
+(3,'Sneha Patel','snehaP','sneha@example.com','9123456780','44 Green Colony','Ahmedabad','Gujarat','mypwd','Customer',NOW()),
+(4,'Arjun Nair','arjunN','arjun@example.com','9811122233','14 MG Road','Bengaluru','Karnataka','cust1','Customer',NOW()),
+(5,'Pooja Iyer','poojaI','pooja@example.com','9822233344','7 Lake View','Chennai','Tamil Nadu','cust2','Customer',NOW()),
+(6,'Vikas Yadav','vikasY','vikas@example.com','9833344455','9 Ring Road','Lucknow','Uttar Pradesh','cust3','Customer',NOW()),
+(7,'Sara Khan','saraK','sara@example.com','9855566677','3 River Side','Bhopal','Madhya Pradesh','cust4','Customer',NOW()),
+(8,'Amit Verma','amitV','amit@example.com','9090909090','11 Industrial Area','Pune','Maharashtra','amitpwd','Mechanic',NOW()),
+(9,'Priya Singh','priyaM','priya@example.com','9988776655','55 Garage Road','Jaipur','Rajasthan','priyapwd','Mechanic',NOW()),
+(10,'Rahul Desai','rahulD','rahul@example.com','9877012345','88 Station Rd','Surat','Gujarat','rahulpwd','Mechanic',NOW());
+
+-- ================= VEHICLES =================
+INSERT INTO vehicles (vehicle_no, vehicle_brand, model, type, user_id) VALUES
+('MH12AB1234','Maruti Suzuki','Swift','Car',2),
+('DL05XY5678','Hero','Splendor','Bike',2),
+('GJ01MN4321','Hyundai','Creta','Car',3),
+('RJ14PQ7890','Tata','407','Truck',3),
+('KA01CD1111','Honda','City','Car',4),
+('TN09EF2222','TVS','Apache','Bike',5),
+('UP32GH3333','Mahindra','Bolero','Car',6),
+('MP04LM5555','Toyota','Innova Crysta','Car',7);
+
+-- ================= SERVICES (1–20) =================
+INSERT INTO services (service_id, service_name, description, base_price, estimated_hours, warranty_months, category, status, created_at) VALUES
+(1,'Oil Change','Engine oil replacement with filter',1200.00,2,1,'Maintenance','Active',NOW()),
+(2,'Brake Fluid Replacement','Flush and refill brake fluid',900.00,1,3,'Maintenance','Active',NOW()),
+(3,'Coolant Flush','Radiator coolant flush and refill',1500.00,2,6,'Maintenance','Active',NOW()),
+(4,'Air Filter Replacement','Replace engine air filter',600.00,1,6,'Maintenance','Active',NOW()),
+(5,'AC Service','Air conditioning cleaning and gas refill',2000.00,4,3,'Maintenance','Active',NOW()),
+(6,'Wheel Alignment & Balancing','Tyre alignment and balancing checkup',800.00,2,0,'Maintenance','Active',NOW()),
+(7,'Battery Replacement','New battery installation with testing',4500.00,1,24,'Maintenance','Active',NOW()),
+(8,'Spark Plug Replacement','Replace spark plugs for efficient combustion',700.00,1,12,'Maintenance','Active',NOW()),
+(9,'Clutch Repair','Clutch plate replacement',3500.00,5,0,'Repair','Active',NOW()),
+(10,'Engine Overhaul','Complete engine dismantling & repair',15000.00,20,6,'Repair','Active',NOW()),
+(11,'Suspension Repair','Shock absorbers and suspension system service',7000.00,6,6,'Repair','Active',NOW()),
+(12,'Brake Pad Replacement','Change front & rear brake pads',2500.00,2,6,'Repair','Active',NOW()),
+(13,'Radiator Repair','Leak test & radiator welding service',5000.00,5,6,'Repair','Active',NOW()),
+(14,'Pollution Check','Emissions test for regulatory compliance',500.00,1,0,'Inspection','Active',NOW()),
+(15,'General Vehicle Inspection','Multi-point inspection (brakes, lights, fluids)',1000.00,2,0,'Inspection','Active',NOW()),
+(16,'Headlight Upgrade','Install LED headlight kit',2500.00,2,12,'Upgrade','Active',NOW()),
+(17,'Music System Upgrade','Install speakers & infotainment system',12000.00,6,24,'Upgrade','Active',NOW()),
+(18,'GPS Tracker Installation','Real-time GPS tracking system',6000.00,2,12,'Upgrade','Active',NOW()),
+(19,'Paint Touchup','Minor dent & paint touchup',5000.00,6,12,'Painting','Active',NOW()),
+(20,'Full Body Repaint','Complete body repaint',25000.00,40,24,'Painting','Active',NOW());
+
+-- ================= SERVICE BOOKINGS =================
+INSERT INTO service_bookings (booking_id, vehicle_no, service_id, booking_date, status) VALUES
+(1,'MH12AB1234',1,NOW(),'Completed'),
+(2,'DL05XY5678',2,NOW(),'In Progress'),
+(3,'GJ01MN4321',6,NOW(),'Pending'),
+(4,'RJ14PQ7890',19,NOW(),'Completed'),
+(5,'KA01CD1111',11,NOW(),'Completed'),
+(6,'TN09EF2222',16,NOW(),'Completed'),
+(7,'UP32GH3333',10,NOW(),'In Progress'),
+(8,'MP04LM5555',20,NOW(),'Pending'),
+(9,'MH12AB1234',14,NOW(),'Completed'),
+(10,'KA01CD1111',18,NOW(),'Completed'),
+(11,'TN09EF2222',12,NOW(),'In Progress'),
+(12,'UP32GH3333',5,NOW(),'Completed');
+
+-- ================= MECHANICS INFO =================
+INSERT INTO mechanics_info (mechanic_id, full_name, specialization, phone, email) VALUES
+(1,'Amit Verma','Engine Specialist','9090909090','amit@example.com'),
+(2,'Priya Singh','Painting & Body Work','9988776655','priya@example.com'),
+(3,'Rahul Desai','Electrical Systems','9877012345','rahul@example.com');
+
+-- ================= MECHANIC ASSIGNMENTS =================
+INSERT INTO mechanic_assignments (assignment_id, booking_id, mechanic_id, assigned_date) VALUES
+(1,1,1,NOW()),
+(2,2,1,NOW()),
+(3,3,3,NOW()),
+(4,4,2,NOW()),
+(5,5,2,NOW()),
+(6,6,3,NOW()),
+(7,7,1,NOW()),
+(8,8,2,NOW()),
+(9,9,3,NOW()),
+(10,10,1,NOW()),
+(11,11,3,NOW()),
+(12,12,2,NOW());
+
+-- ================= INVOICES =================
+-- amounts aligned roughly to the service base_price above
+INSERT INTO invoices (invoice_id, booking_id, user_id, amount, payment_status, payment_method, invoice_date) VALUES
+(1,1,2,1200.00,'Paid','UPI',NOW()),          -- Ravi, Oil Change
+(2,2,2,900.00,'Pending','Cash',NOW()),        -- Ravi, Brake Fluid
+(3,3,3,800.00,'Pending','Card',NOW()),        -- Sneha, Alignment
+(4,4,3,5000.00,'Paid','Bank Transfer',NOW()), -- Sneha, Paint Touchup
+(5,5,4,7000.00,'Paid','UPI',NOW()),           -- Arjun, Suspension
+(6,6,5,2500.00,'Paid','Card',NOW()),          -- Pooja, Headlight
+(7,7,6,15000.00,'Pending','UPI',NOW()),       -- Vikas, Engine Overhaul
+(8,8,7,25000.00,'Pending','Card',NOW()),      -- Sara, Full Repaint
+(9,9,2,500.00,'Paid','Cash',NOW()),           -- Ravi, Pollution
+(10,10,4,6000.00,'Paid','UPI',NOW()),         -- Arjun, GPS Tracker
+(11,11,5,2500.00,'Pending','Cash',NOW()),     -- Pooja, Brake Pads
+(12,12,6,2000.00,'Paid','Card',NOW());        -- Vikas, AC Service
+
+-- ================= PARTS INVENTORY =================
+INSERT INTO parts_inventory (part_id, part_name, description, unit_price, stock_quantity, supplier) VALUES
+(1,'Engine Oil 5W30','Synthetic engine oil',400.00,50,'Castrol Supplier'),
+(2,'Brake Fluid DOT4','High performance brake fluid',250.00,30,'Bosch Dealer'),
+(3,'Air Filter Swift','OEM air filter for Maruti Swift',350.00,20,'Maruti Genuine Parts'),
+(4,'LED Headlight Kit','Universal LED headlight upgrade',2200.00,15,'Philips Dealer'),
+(5,'Clutch Plate Set','Clutch plate for cars',3000.00,10,'Valeo Supplier'),
+(6,'Spark Plug (Set of 4)','Copper/Iridium spark plugs',600.00,40,'NGK Supplier'),
+(7,'Fuel Filter (Universal)','Inline fuel filter',500.00,35,'Bosch Dealer'),
+(8,'Wiper Blade 16"','Single blade 16 inch',200.00,60,'Hella Dealer'),
+(9,'Battery 12V 45Ah','Maintenance free car battery',5200.00,12,'Exide Dealer'),
+(10,'Brake Pad Front (Swift)','Front pad set Swift',1800.00,18,'Maruti Genuine Parts'),
+(11,'Radiator Hose','Rubber hose universal',350.00,25,'Local Supplier'),
+(12,'Alternator Assembly','12V alternator',6500.00,6,'Lucas-TVS Dealer'),
+(13,'Starter Motor','Car starter motor',5200.00,5,'Bosch Dealer'),
+(14,'Timing Belt','Rubber timing belt',2400.00,14,'Gates Dealer'),
+(15,'Coolant (1L)','Ethylene glycol coolant',350.00,40,'Bosch Dealer');
+
+-- ================= FEEDBACK =================
+INSERT INTO feedback (feedback_id, booking_id, rating, comments, created_at) VALUES
+(1,1,5,'Excellent service, quick and professional!',NOW()),
+(2,2,4,'Work in progress, staff is helpful.',NOW()),
+(3,4,5,'Paint touchup looks great.',NOW()),
+(4,5,5,'Suspension feels solid after repair.',NOW()),
+(5,6,4,'Headlights are bright, clean wiring.',NOW()),
+(6,9,5,'Pollution check was super quick.',NOW()),
+(7,12,4,'AC is cooling well now.',NOW());
+
+COMMIT;
+
+
+
+
+
+
+
+
+
+
+
+
+START TRANSACTION;
+
+-- ================= USERS (24) =================
+INSERT INTO users (user_id, name, username, email, phone, address, city, state, password, user_role, registered_at) VALUES
+(1,'Admin Mehul','admin','admin@garage.com','9876543210','HQ – Shop No. 1','Mumbai','Maharashtra','admin123','Admin','2025-01-01 09:00:00'),
+
+-- === Mechanics (6) ===
+(2,'Aman Sethi','mech_aman','aman@garage.com','9000000002','Bay-1, Service Lane','Mumbai','Maharashtra','m2pwd','Mechanic','2025-01-02 10:00:00'),
+(3,'Neha Joshi','mech_neha','neha@garage.com','9000000003','Bay-2, Service Lane','Pune','Maharashtra','m3pwd','Mechanic','2025-01-02 10:05:00'),
+(4,'Karan Gupta','mech_karan','karan@garage.com','9000000004','Bay-3, Service Lane','Delhi','Delhi','m4pwd','Mechanic','2025-01-02 10:10:00'),
+(5,'Divya Rao','mech_divya','divya@garage.com','9000000005','Bay-4, Service Lane','Bengaluru','Karnataka','m5pwd','Mechanic','2025-01-02 10:15:00'),
+(6,'Imran Khan','mech_imran','imran@garage.com','9000000006','Bay-5, Service Lane','Jaipur','Rajasthan','m6pwd','Mechanic','2025-01-02 10:20:00'),
+(7,'Rohit Yadav','mech_rohit','rohit@garage.com','9000000007','Bay-6, Service Lane','Surat','Gujarat','m7pwd','Mechanic','2025-01-02 10:25:00'),
+
+-- === Customers (17) ===
+(8,'Ravi Sharma','ravi_s','ravi.s@example.com','9811100008','A-12 Park View','Delhi','Delhi','c8pwd','Customer','2025-01-03 11:00:00'),
+(9,'Sneha Patel','sneha_pt','sneha.pt@example.com','9811100009','44 Green Colony','Ahmedabad','Gujarat','c9pwd','Customer','2025-01-03 11:05:00'),
+(10,'Arjun Nair','arjun_n','arjun.n@example.com','9811100010','14 MG Road','Bengaluru','Karnataka','c10pwd','Customer','2025-01-03 11:10:00'),
+(11,'Pooja Iyer','pooja_i','pooja.i@example.com','9811100011','7 Lake View','Chennai','Tamil Nadu','c11pwd','Customer','2025-01-03 11:15:00'),
+(12,'Vikas Yadav','vikas_y','vikas.y@example.com','9811100012','9 Ring Road','Lucknow','Uttar Pradesh','c12pwd','Customer','2025-01-03 11:20:00'),
+(13,'Sara Khan','sara_k','sara.k@example.com','9811100013','3 River Side','Bhopal','Madhya Pradesh','c13pwd','Customer','2025-01-03 11:25:00'),
+(14,'Priyanka Desai','priyanka_d','priyanka.d@example.com','9811100014','8 Sunrise Apt','Surat','Gujarat','c14pwd','Customer','2025-01-03 11:30:00'),
+(15,'Mohit Jain','mohit_j','mohit.j@example.com','9811100015','22 Park Road','Jaipur','Rajasthan','c15pwd','Customer','2025-01-03 11:35:00'),
+(16,'Anita Verma','anita_v','anita.v@example.com','9811100016','55 City Center','Pune','Maharashtra','c16pwd','Customer','2025-01-03 11:40:00'),
+(17,'Harsh Mehta','harsh_m','harsh.m@example.com','9811100017','88 Station Rd','Vadodara','Gujarat','c17pwd','Customer','2025-01-03 11:45:00'),
+(18,'Kritika Roy','kritika_r','kritika.r@example.com','9811100018','19 Garden Lane','Kolkata','West Bengal','c18pwd','Customer','2025-01-03 11:50:00'),
+(19,'Manish Tiwari','manish_t','manish.t@example.com','9811100019','121 Skyline','Noida','Uttar Pradesh','c19pwd','Customer','2025-01-03 11:55:00'),
+(20,'Meera Kulkarni','meera_k','meera.k@example.com','9811100020','44 River Walk','Nashik','Maharashtra','c20pwd','Customer','2025-01-03 12:00:00'),
+(21,'Kabir Singh','kabir_s','kabir.s@example.com','9811100021','9 Lotus Park','Chandigarh','Chandigarh','c21pwd','Customer','2025-01-03 12:05:00'),
+(22,'Tanya Arora','tanya_a','tanya.a@example.com','9811100022','77 Queens Rd','Amritsar','Punjab','c22pwd','Customer','2025-01-03 12:10:00'),
+(23,'Nikhil Bansal','nikhil_b','nikhil.b@example.com','9811100023','5 Ring View','Indore','Madhya Pradesh','c23pwd','Customer','2025-01-03 12:15:00'),
+(24,'Rhea Dutta','rhea_d','rhea.d@example.com','9811100024','3 Lakeside','Guwahati','Assam','c24pwd','Customer','2025-01-03 12:20:00');
+
+-- ================= VEHICLES (38) =================
+INSERT INTO vehicles (vehicle_no, vehicle_brand, model, type, user_id) VALUES
+('MH01AB1001','Maruti Suzuki','Baleno','Car',8),
+('MH01AB1002','Hyundai','i20','Car',8),
+('GJ05CD2001','Hero','Splendor','Bike',9),
+('GJ05CD2002','Honda','Activa 6G','Bike',9),
+('KA03EF3001','Hyundai','Creta','Car',10),
+('KA03EF3002','Kia','Seltos','Car',10),
+('TN09GH4001','Honda','City','Car',11),
+('TN09GH4002','TVS','Apache RTR','Bike',11),
+('UP32JK5001','Mahindra','Bolero','Car',12),
+('UP32JK5002','Bajaj','Pulsar 150','Bike',12),
+('MP04LM6001','Toyota','Innova Crysta','Car',13),
+('MP04LM6002','Suzuki','Access 125','Bike',13),
+('GJ11NN7001','Tata','Nexon','Car',14),
+('RJ14PQ8001','Tata','407','Truck',15),
+('RJ14PQ8002','Ashok Leyland','Ecomet','Truck',15),
+('MH12RS9001','Volkswagen','Polo','Car',16),
+('MH12RS9002','Renault','Kwid','Car',16),
+('GJ01MN9101','Hyundai','Verna','Car',17),
+('GJ01MN9102','Yamaha','FZ','Bike',17),
+('WB02TT9201','Maruti Suzuki','Swift','Car',18),
+('WB02TT9202','Royal Enfield','Classic 350','Bike',18),
+('DL05XY9301','Honda','Amaze','Car',19),
+('DL05XY9302','TVS','Jupiter','Bike',19),
+('MH14UV9401','Skoda','Slavia','Car',20),
+('MH14UV9402','Maruti Suzuki','Celerio','Car',20),
+('CH01WW9501','Hyundai','Aura','Car',21),
+('CH01WW9502','KTM','Duke 200','Bike',21),
+('PB08ZZ9601','Maruti Suzuki','Ertiga','Car',22),
+('PB08ZZ9602','Hero','Glamour','Bike',22),
+('MP09AA9701','Hyundai','Venue','Car',23),
+('MP09AA9702','Mahindra','Scorpio','Car',23),
+('AS01BB9801','Tata','Altroz','Car',24),
+('AS01BB9802','Honda','Jazz','Car',24),
+('MH01CC9901','Hyundai','Exter','Car',8),
+('MH01CC9902','Maruti Suzuki','Fronx','Car',8),
+('GJ05DD0001','Bajaj','Chetak','Bike',9),
+('KA03EE0101','Tata','Harrier','Car',10),
+('TN09FF0201','Maruti Suzuki','Brezza','Car',11);
+
+-- ================= SERVICES (1–20, updated prices a bit) =================
+INSERT INTO services (service_id, service_name, description, base_price, estimated_hours, warranty_months, category, status, created_at) VALUES
+(1,'Oil Change','Engine oil + filter replacement',1299.00,2,1,'Maintenance','Active','2025-01-01 09:00:00'),
+(2,'Brake Fluid Replacement','Flush & refill brake fluid',950.00,1,3,'Maintenance','Active','2025-01-01 09:00:00'),
+(3,'Coolant Flush','Radiator coolant flush & refill',1550.00,2,6,'Maintenance','Active','2025-01-01 09:00:00'),
+(4,'Air Filter Replacement','Replace engine air filter',650.00,1,6,'Maintenance','Active','2025-01-01 09:00:00'),
+(5,'AC Service','AC cleaning & gas refill',2100.00,4,3,'Maintenance','Active','2025-01-01 09:00:00'),
+(6,'Wheel Alignment & Balancing','Alignment & balancing',850.00,2,0,'Maintenance','Active','2025-01-01 09:00:00'),
+(7,'Battery Replacement','Battery with testing',4700.00,1,24,'Maintenance','Active','2025-01-01 09:00:00'),
+(8,'Spark Plug Replacement','Replace spark plugs',750.00,1,12,'Maintenance','Active','2025-01-01 09:00:00'),
+(9,'Clutch Repair','Clutch plate replacement',3600.00,5,0,'Repair','Active','2025-01-01 09:00:00'),
+(10,'Engine Overhaul','Engine dismantle & repair',15200.00,20,6,'Repair','Active','2025-01-01 09:00:00'),
+(11,'Suspension Repair','Shocks & suspension service',7200.00,6,6,'Repair','Active','2025-01-01 09:00:00'),
+(12,'Brake Pad Replacement','Front & rear pads',2550.00,2,6,'Repair','Active','2025-01-01 09:00:00'),
+(13,'Radiator Repair','Leak test & weld',5100.00,5,6,'Repair','Active','2025-01-01 09:00:00'),
+(14,'Pollution Check','Emissions test',550.00,1,0,'Inspection','Active','2025-01-01 09:00:00'),
+(15,'General Vehicle Inspection','Multi-point inspection',1050.00,2,0,'Inspection','Active','2025-01-01 09:00:00'),
+(16,'Headlight Upgrade','LED kit install',2600.00,2,12,'Upgrade','Active','2025-01-01 09:00:00'),
+(17,'Music System Upgrade','Speakers + infotainment',12200.00,6,24,'Upgrade','Active','2025-01-01 09:00:00'),
+(18,'GPS Tracker Installation','Real-time GPS',6200.00,2,12,'Upgrade','Active','2025-01-01 09:00:00'),
+(19,'Paint Touchup','Minor dent & paint',5200.00,6,12,'Painting','Active','2025-01-01 09:00:00'),
+(20,'Full Body Repaint','Complete repaint',25500.00,40,24,'Painting','Active','2025-01-01 09:00:00');
+
+-- ================= SERVICE BOOKINGS (120 across Jan–Oct 2025) =================
+-- Status mix: Completed / In Progress / Pending / Cancelled
+-- About 12 bookings per month for strong weekly/monthly graphs.
+INSERT INTO service_bookings (booking_id, vehicle_no, service_id, booking_date, status) VALUES
+-- Jan 2025 (1–12)
+(1,'MH01AB1001',1,'2025-01-04','Completed'),
+(2,'GJ05CD2001',14,'2025-01-05','Completed'),
+(3,'KA03EF3001',6,'2025-01-07','Completed'),
+(4,'TN09GH4001',12,'2025-01-09','Completed'),
+(5,'UP32JK5001',19,'2025-01-12','In Progress'),
+(6,'MP04LM6001',5,'2025-01-14','Completed'),
+(7,'GJ11NN7001',1,'2025-01-16','Completed'),
+(8,'RJ14PQ8001',9,'2025-01-18','Completed'),
+(9,'MH12RS9001',15,'2025-01-21','Completed'),
+(10,'GJ01MN9101',16,'2025-01-24','Completed'),
+(11,'WB02TT9201',18,'2025-01-27','Pending'),
+(12,'DL05XY9301',11,'2025-01-30','Completed'),
+
+-- Feb 2025 (13–24)
+(13,'TN09GH4002',2,'2025-02-02','Completed'),
+(14,'UP32JK5002',8,'2025-02-04','Completed'),
+(15,'MP04LM6002',6,'2025-02-06','Completed'),
+(16,'GJ05CD2002',12,'2025-02-08','Completed'),
+(17,'RJ14PQ8002',19,'2025-02-10','Pending'),
+(18,'MH12RS9002',3,'2025-02-12','Completed'),
+(19,'GJ01MN9102',7,'2025-02-14','Completed'),
+(20,'WB02TT9202',1,'2025-02-16','Completed'),
+(21,'DL05XY9302',5,'2025-02-18','Completed'),
+(22,'MH14UV9401',10,'2025-02-21','In Progress'),
+(23,'CH01WW9501',14,'2025-02-24','Completed'),
+(24,'CH01WW9502',11,'2025-02-27','Completed'),
+
+-- Mar 2025 (25–36)
+(25,'PB08ZZ9601',12,'2025-03-02','Completed'),
+(26,'PB08ZZ9602',2,'2025-03-04','Completed'),
+(27,'MP09AA9701',6,'2025-03-06','Completed'),
+(28,'MP09AA9702',19,'2025-03-08','Completed'),
+(29,'AS01BB9801',15,'2025-03-10','Completed'),
+(30,'AS01BB9802',8,'2025-03-12','Completed'),
+(31,'MH01CC9901',1,'2025-03-14','Completed'),
+(32,'MH01CC9902',5,'2025-03-16','Completed'),
+(33,'GJ05DD0001',14,'2025-03-19','Completed'),
+(34,'KA03EE0101',11,'2025-03-22','Completed'),
+(35,'TN09FF0201',3,'2025-03-25','Pending'),
+(36,'MH01AB1002',18,'2025-03-28','Completed'),
+
+-- Apr 2025 (37–48)
+(37,'MH01AB1001',12,'2025-04-02','Completed'),
+(38,'GJ05CD2001',1,'2025-04-04','Completed'),
+(39,'KA03EF3001',10,'2025-04-06','In Progress'),
+(40,'TN09GH4001',6,'2025-04-08','Completed'),
+(41,'UP32JK5001',19,'2025-04-10','Completed'),
+(42,'MP04LM6001',5,'2025-04-12','Completed'),
+(43,'GJ11NN7001',4,'2025-04-14','Completed'),
+(44,'RJ14PQ8001',9,'2025-04-16','Completed'),
+(45,'MH12RS9001',15,'2025-04-19','Completed'),
+(46,'GJ01MN9101',16,'2025-04-22','Completed'),
+(47,'WB02TT9201',18,'2025-04-25','Completed'),
+(48,'DL05XY9301',7,'2025-04-28','Completed'),
+
+-- May 2025 (49–60)
+(49,'TN09GH4002',14,'2025-05-02','Completed'),
+(50,'UP32JK5002',8,'2025-05-04','Completed'),
+(51,'MP04LM6002',6,'2025-05-06','Completed'),
+(52,'GJ05CD2002',12,'2025-05-08','Completed'),
+(53,'RJ14PQ8002',19,'2025-05-10','Completed'),
+(54,'MH12RS9002',3,'2025-05-12','Completed'),
+(55,'GJ01MN9102',7,'2025-05-14','Completed'),
+(56,'WB02TT9202',1,'2025-05-16','Completed'),
+(57,'DL05XY9302',5,'2025-05-18','Completed'),
+(58,'MH14UV9401',10,'2025-05-21','Completed'),
+(59,'CH01WW9501',4,'2025-05-24','Completed'),
+(60,'CH01WW9502',11,'2025-05-27','Completed'),
+
+-- Jun 2025 (61–72)
+(61,'PB08ZZ9601',12,'2025-06-02','Completed'),
+(62,'PB08ZZ9602',2,'2025-06-04','Completed'),
+(63,'MP09AA9701',6,'2025-06-06','Completed'),
+(64,'MP09AA9702',19,'2025-06-08','Completed'),
+(65,'AS01BB9801',15,'2025-06-10','Completed'),
+(66,'AS01BB9802',8,'2025-06-12','Completed'),
+(67,'MH01CC9901',1,'2025-06-14','Completed'),
+(68,'MH01CC9902',5,'2025-06-16','Completed'),
+(69,'GJ05DD0001',14,'2025-06-19','Completed'),
+(70,'KA03EE0101',11,'2025-06-22','Completed'),
+(71,'TN09FF0201',3,'2025-06-25','Completed'),
+(72,'MH01AB1002',18,'2025-06-28','Completed'),
+
+-- Jul 2025 (73–84)
+(73,'MH01AB1001',1,'2025-07-02','Completed'),
+(74,'GJ05CD2001',14,'2025-07-04','Completed'),
+(75,'KA03EF3001',6,'2025-07-06','Completed'),
+(76,'TN09GH4001',12,'2025-07-08','Completed'),
+(77,'UP32JK5001',19,'2025-07-10','Completed'),
+(78,'MP04LM6001',5,'2025-07-12','Completed'),
+(79,'GJ11NN7001',4,'2025-07-14','Completed'),
+(80,'RJ14PQ8001',9,'2025-07-16','Completed'),
+(81,'MH12RS9001',15,'2025-07-19','Completed'),
+(82,'GJ01MN9101',16,'2025-07-22','Completed'),
+(83,'WB02TT9201',18,'2025-07-25','In Progress'),
+(84,'DL05XY9301',7,'2025-07-28','Completed'),
+
+-- Aug 2025 (85–96)
+(85,'TN09GH4002',2,'2025-08-02','Completed'),
+(86,'UP32JK5002',8,'2025-08-04','Completed'),
+(87,'MP04LM6002',6,'2025-08-06','Completed'),
+(88,'GJ05CD2002',12,'2025-08-08','Completed'),
+(89,'RJ14PQ8002',19,'2025-08-10','Completed'),
+(90,'MH12RS9002',3,'2025-08-12','Completed'),
+(91,'GJ01MN9102',7,'2025-08-14','Completed'),
+(92,'WB02TT9202',1,'2025-08-16','Completed'),
+(93,'DL05XY9302',5,'2025-08-18','Completed'),
+(94,'MH14UV9401',10,'2025-08-21','In Progress'),
+(95,'CH01WW9501',4,'2025-08-24','Completed'),
+(96,'CH01WW9502',11,'2025-08-27','Completed'),
+
+-- Sep 2025 (97–108)
+(97,'PB08ZZ9601',12,'2025-09-02','Completed'),
+(98,'PB08ZZ9602',2,'2025-09-04','Completed'),
+(99,'MP09AA9701',6,'2025-09-06','Completed'),
+(100,'MP09AA9702',19,'2025-09-08','Completed'),
+(101,'AS01BB9801',15,'2025-09-10','Completed'),
+(102,'AS01BB9802',8,'2025-09-12','Completed'),
+(103,'MH01CC9901',1,'2025-09-14','Completed'),
+(104,'MH01CC9902',5,'2025-09-16','Completed'),
+(105,'GJ05DD0001',14,'2025-09-19','Completed'),
+(106,'KA03EE0101',11,'2025-09-22','Completed'),
+(107,'TN09FF0201',3,'2025-09-25','Completed'),
+(108,'MH01AB1002',18,'2025-09-28','Completed'),
+
+-- Oct 2025 (109–120)
+(109,'MH01AB1001',12,'2025-10-02','Completed'),
+(110,'GJ05CD2001',1,'2025-10-04','Completed'),
+(111,'KA03EF3001',10,'2025-10-06','Completed'),
+(112,'TN09GH4001',6,'2025-10-08','Completed'),
+(113,'UP32JK5001',19,'2025-10-10','Completed'),
+(114,'MP04LM6001',5,'2025-10-12','Completed'),
+(115,'GJ11NN7001',4,'2025-10-14','Completed'),
+(116,'RJ14PQ8001',9,'2025-10-16','Completed'),
+(117,'MH12RS9001',15,'2025-10-19','Completed'),
+(118,'GJ01MN9101',16,'2025-10-22','Completed'),
+(119,'WB02TT9201',18,'2025-10-25','Completed'),
+(120,'DL05XY9301',7,'2025-10-28','Completed');
+
+-- ================= MECHANIC ASSIGNMENTS (1:1 with bookings, round-robin 6 mechs) =================
+INSERT INTO mechanic_assignments (assignment_id, booking_id, mechanic_id, assigned_date) VALUES
+(1,1,2,'2025-01-04'),(2,2,3,'2025-01-05'),(3,3,4,'2025-01-07'),(4,4,5,'2025-01-09'),(5,5,6,'2025-01-12'),(6,6,7,'2025-01-14'),
+(7,7,2,'2025-01-16'),(8,8,3,'2025-01-18'),(9,9,4,'2025-01-21'),(10,10,5,'2025-01-24'),(11,11,6,'2025-01-27'),(12,12,7,'2025-01-30'),
+(13,13,2,'2025-02-02'),(14,14,3,'2025-02-04'),(15,15,4,'2025-02-06'),(16,16,5,'2025-02-08'),(17,17,6,'2025-02-10'),(18,18,7,'2025-02-12'),
+(19,19,2,'2025-02-14'),(20,20,3,'2025-02-16'),(21,21,4,'2025-02-18'),(22,22,5,'2025-02-21'),(23,23,6,'2025-02-24'),(24,24,7,'2025-02-27'),
+(25,25,2,'2025-03-02'),(26,26,3,'2025-03-04'),(27,27,4,'2025-03-06'),(28,28,5,'2025-03-08'),(29,29,6,'2025-03-10'),(30,30,7,'2025-03-12'),
+(31,31,2,'2025-03-14'),(32,32,3,'2025-03-16'),(33,33,4,'2025-03-19'),(34,34,5,'2025-03-22'),(35,35,6,'2025-03-25'),(36,36,7,'2025-03-28'),
+(37,37,2,'2025-04-02'),(38,38,3,'2025-04-04'),(39,39,4,'2025-04-06'),(40,40,5,'2025-04-08'),(41,41,6,'2025-04-10'),(42,42,7,'2025-04-12'),
+(43,43,2,'2025-04-14'),(44,44,3,'2025-04-16'),(45,45,4,'2025-04-19'),(46,46,5,'2025-04-22'),(47,47,6,'2025-04-25'),(48,48,7,'2025-04-28'),
+(49,49,2,'2025-05-02'),(50,50,3,'2025-05-04'),(51,51,4,'2025-05-06'),(52,52,5,'2025-05-08'),(53,53,6,'2025-05-10'),(54,54,7,'2025-05-12'),
+(55,55,2,'2025-05-14'),(56,56,3,'2025-05-16'),(57,57,4,'2025-05-18'),(58,58,5,'2025-05-21'),(59,59,6,'2025-05-24'),(60,60,7,'2025-05-27'),
+(61,61,2,'2025-06-02'),(62,62,3,'2025-06-04'),(63,63,4,'2025-06-06'),(64,64,5,'2025-06-08'),(65,65,6,'2025-06-10'),(66,66,7,'2025-06-12'),
+(67,67,2,'2025-06-14'),(68,68,3,'2025-06-16'),(69,69,4,'2025-06-19'),(70,70,5,'2025-06-22'),(71,71,6,'2025-06-25'),(72,72,7,'2025-06-28'),
+(73,73,2,'2025-07-02'),(74,74,3,'2025-07-04'),(75,75,4,'2025-07-06'),(76,76,5,'2025-07-08'),(77,77,6,'2025-07-10'),(78,78,7,'2025-07-12'),
+(79,79,2,'2025-07-14'),(80,80,3,'2025-07-16'),(81,81,4,'2025-07-19'),(82,82,5,'2025-07-22'),(83,83,6,'2025-07-25'),(84,84,7,'2025-07-28'),
+(85,85,2,'2025-08-02'),(86,86,3,'2025-08-04'),(87,87,4,'2025-08-06'),(88,88,5,'2025-08-08'),(89,89,6,'2025-08-10'),(90,90,7,'2025-08-12'),
+(91,91,2,'2025-08-14'),(92,92,3,'2025-08-16'),(93,93,4,'2025-08-18'),(94,94,5,'2025-08-21'),(95,95,6,'2025-08-24'),(96,96,7,'2025-08-27'),
+(97,97,2,'2025-09-02'),(98,98,3,'2025-09-04'),(99,99,4,'2025-09-06'),(100,100,5,'2025-09-08'),(101,101,6,'2025-09-10'),(102,102,7,'2025-09-12'),
+(103,103,2,'2025-09-14'),(104,104,3,'2025-09-16'),(105,105,4,'2025-09-19'),(106,106,5,'2025-09-22'),(107,107,6,'2025-09-25'),(108,108,7,'2025-09-28'),
+(109,109,2,'2025-10-02'),(110,110,3,'2025-10-04'),(111,111,4,'2025-10-06'),(112,112,5,'2025-10-08'),(113,113,6,'2025-10-10'),(114,114,7,'2025-10-12'),
+(115,115,2,'2025-10-14'),(116,116,3,'2025-10-16'),(117,117,4,'2025-10-19'),(118,118,5,'2025-10-22'),(119,119,6,'2025-10-25'),(120,120,7,'2025-10-28');
+
+-- ================= INVOICES (120, amounts ~ base_price ± variance) =================
+-- Payment mix: UPI/Card/Cash/Bank Transfer; Status mix: Paid/Pending/Failed
+INSERT INTO invoices (invoice_id, booking_id, user_id, amount, payment_status, payment_method, invoice_date) VALUES
+-- Jan 2025
+(1,1,8,1299.00,'Paid','UPI','2025-01-04'),
+(2,2,9,550.00,'Paid','Cash','2025-01-05'),
+(3,3,10,850.00,'Paid','UPI','2025-01-07'),
+(4,4,11,2550.00,'Paid','Card','2025-01-09'),
+(5,5,12,5200.00,'Pending','Card','2025-01-12'),
+(6,6,13,2100.00,'Paid','UPI','2025-01-14'),
+(7,7,14,1299.00,'Paid','Cash','2025-01-16'),
+(8,8,15,3600.00,'Paid','Bank Transfer','2025-01-18'),
+(9,9,16,1050.00,'Paid','UPI','2025-01-21'),
+(10,10,17,2600.00,'Paid','Card','2025-01-24'),
+(11,11,18,6200.00,'Pending','Card','2025-01-27'),
+(12,12,19,7200.00,'Paid','UPI','2025-01-30'),
+
+-- Feb 2025
+(13,13,11,950.00,'Paid','UPI','2025-02-02'),
+(14,14,12,750.00,'Paid','Cash','2025-02-04'),
+(15,15,13,850.00,'Paid','UPI','2025-02-06'),
+(16,16,12,2550.00,'Paid','Card','2025-02-08'),
+(17,17,15,5200.00,'Pending','Card','2025-02-10'),
+(18,18,16,1550.00,'Paid','UPI','2025-02-12'),
+(19,19,17,4700.00,'Paid','UPI','2025-02-14'),
+(20,20,18,1299.00,'Paid','Cash','2025-02-16'),
+(21,21,19,2100.00,'Paid','UPI','2025-02-18'),
+(22,22,20,15200.00,'In Progress','Bank Transfer','2025-02-21'),
+(23,23,21,550.00,'Paid','Cash','2025-02-24'),
+(24,24,21,7200.00,'Paid','UPI','2025-02-27'),
+
+-- Mar 2025
+(25,25,22,2550.00,'Paid','UPI','2025-03-02'),
+(26,26,22,950.00,'Paid','Cash','2025-03-04'),
+(27,27,23,850.00,'Paid','UPI','2025-03-06'),
+(28,28,23,5200.00,'Paid','Card','2025-03-08'),
+(29,29,24,1050.00,'Paid','UPI','2025-03-10'),
+(30,30,24,750.00,'Paid','Cash','2025-03-12'),
+(31,31,8,1299.00,'Paid','UPI','2025-03-14'),
+(32,32,8,2100.00,'Paid','UPI','2025-03-16'),
+(33,33,9,550.00,'Paid','Cash','2025-03-19'),
+(34,34,10,7200.00,'Paid','UPI','2025-03-22'),
+(35,35,11,1550.00,'Pending','Card','2025-03-25'),
+(36,36,8,6200.00,'Paid','Bank Transfer','2025-03-28'),
+
+-- Apr 2025
+(37,37,8,2550.00,'Paid','UPI','2025-04-02'),
+(38,38,9,1299.00,'Paid','UPI','2025-04-04'),
+(39,39,10,15200.00,'Pending','Bank Transfer','2025-04-06'),
+(40,40,11,850.00,'Paid','UPI','2025-04-08'),
+(41,41,12,5200.00,'Paid','Card','2025-04-10'),
+(42,42,13,2100.00,'Paid','UPI','2025-04-12'),
+(43,43,14,650.00,'Paid','Cash','2025-04-14'),
+(44,44,15,3600.00,'Paid','UPI','2025-04-16'),
+(45,45,16,1050.00,'Paid','UPI','2025-04-19'),
+(46,46,17,2600.00,'Paid','Card','2025-04-22'),
+(47,47,18,6200.00,'Paid','UPI','2025-04-25'),
+(48,48,19,4700.00,'Paid','UPI','2025-04-28'),
+
+-- May 2025
+(49,49,11,550.00,'Paid','Cash','2025-05-02'),
+(50,50,12,750.00,'Paid','UPI','2025-05-04'),
+(51,51,13,850.00,'Paid','UPI','2025-05-06'),
+(52,52,12,2550.00,'Paid','Card','2025-05-08'),
+(53,53,15,5200.00,'Paid','Card','2025-05-10'),
+(54,54,16,1550.00,'Paid','UPI','2025-05-12'),
+(55,55,17,4700.00,'Paid','UPI','2025-05-14'),
+(56,56,18,1299.00,'Paid','Cash','2025-05-16'),
+(57,57,19,2100.00,'Paid','UPI','2025-05-18'),
+(58,58,20,15200.00,'Paid','Bank Transfer','2025-05-21'),
+(59,59,21,650.00,'Paid','Cash','2025-05-24'),
+(60,60,21,7200.00,'Paid','UPI','2025-05-27'),
+
+-- Jun 2025
+(61,61,22,2550.00,'Paid','UPI','2025-06-02'),
+(62,62,22,950.00,'Paid','Cash','2025-06-04'),
+(63,63,23,850.00,'Paid','UPI','2025-06-06'),
+(64,64,23,5200.00,'Paid','Card','2025-06-08'),
+(65,65,24,1050.00,'Paid','UPI','2025-06-10'),
+(66,66,24,750.00,'Paid','Cash','2025-06-12'),
+(67,67,8,1299.00,'Paid','UPI','2025-06-14'),
+(68,68,8,2100.00,'Paid','UPI','2025-06-16'),
+(69,69,9,550.00,'Paid','Cash','2025-06-19'),
+(70,70,10,7200.00,'Paid','UPI','2025-06-22'),
+(71,71,11,1550.00,'Paid','Card','2025-06-25'),
+(72,72,8,6200.00,'Paid','Bank Transfer','2025-06-28'),
+
+-- Jul 2025
+(73,73,8,1299.00,'Paid','UPI','2025-07-02'),
+(74,74,9,550.00,'Paid','Cash','2025-07-04'),
+(75,75,10,850.00,'Paid','UPI','2025-07-06'),
+(76,76,11,2550.00,'Paid','Card','2025-07-08'),
+(77,77,12,5200.00,'Paid','Card','2025-07-10'),
+(78,78,13,2100.00,'Paid','UPI','2025-07-12'),
+(79,79,14,650.00,'Paid','Cash','2025-07-14'),
+(80,80,15,3600.00,'Paid','UPI','2025-07-16'),
+(81,81,16,1050.00,'Paid','UPI','2025-07-19'),
+(82,82,17,2600.00,'Paid','Card','2025-07-22'),
+(83,83,18,6200.00,'Pending','UPI','2025-07-25'),
+(84,84,19,4700.00,'Paid','UPI','2025-07-28'),
+
+-- Aug 2025
+(85,85,11,950.00,'Paid','UPI','2025-08-02'),
+(86,86,12,750.00,'Paid','Cash','2025-08-04'),
+(87,87,13,850.00,'Paid','UPI','2025-08-06'),
+(88,88,12,2550.00,'Paid','Card','2025-08-08'),
+(89,89,15,5200.00,'Paid','Card','2025-08-10'),
+(90,90,16,1550.00,'Paid','UPI','2025-08-12'),
+(91,91,17,4700.00,'Paid','UPI','2025-08-14'),
+(92,92,18,1299.00,'Paid','Cash','2025-08-16'),
+(93,93,19,2100.00,'Paid','UPI','2025-08-18'),
+(94,94,20,15200.00,'In Progress','Bank Transfer','2025-08-21'),
+(95,95,21,650.00,'Paid','Cash','2025-08-24'),
+(96,96,21,7200.00,'Paid','UPI','2025-08-27'),
+
+-- Sep 2025
+(97,97,22,2550.00,'Paid','UPI','2025-09-02'),
+(98,98,22,950.00,'Paid','Cash','2025-09-04'),
+(99,99,23,850.00,'Paid','UPI','2025-09-06'),
+(100,100,23,5200.00,'Paid','Card','2025-09-08'),
+(101,101,24,1050.00,'Paid','UPI','2025-09-10'),
+(102,102,24,750.00,'Paid','Cash','2025-09-12'),
+(103,103,8,1299.00,'Paid','UPI','2025-09-14'),
+(104,104,8,2100.00,'Paid','UPI','2025-09-16'),
+(105,105,9,550.00,'Paid','Cash','2025-09-19'),
+(106,106,10,7200.00,'Paid','UPI','2025-09-22'),
+(107,107,11,1550.00,'Paid','Card','2025-09-25'),
+(108,108,8,6200.00,'Paid','Bank Transfer','2025-09-28'),
+
+-- Oct 2025
+(109,109,8,2550.00,'Paid','UPI','2025-10-02'),
+(110,110,9,1299.00,'Paid','UPI','2025-10-04'),
+(111,111,10,15200.00,'Paid','Bank Transfer','2025-10-06'),
+(112,112,11,850.00,'Paid','UPI','2025-10-08'),
+(113,113,12,5200.00,'Paid','Card','2025-10-10'),
+(114,114,13,2100.00,'Paid','UPI','2025-10-12'),
+(115,115,14,650.00,'Paid','Cash','2025-10-14'),
+(116,116,15,3600.00,'Paid','UPI','2025-10-16'),
+(117,117,16,1050.00,'Paid','UPI','2025-10-19'),
+(118,118,17,2600.00,'Paid','Card','2025-10-22'),
+(119,119,18,6200.00,'Paid','UPI','2025-10-25'),
+(120,120,19,4700.00,'Paid','UPI','2025-10-28');
+
+-- ================= PARTS INVENTORY (20) =================
+INSERT INTO parts_inventory (part_id, part_name, description, unit_price, stock_quantity, supplier) VALUES
+(1,'Engine Oil 5W30','Synthetic engine oil',420.00,80,'Castrol Supplier'),
+(2,'Brake Fluid DOT4','High performance brake fluid',260.00,55,'Bosch Dealer'),
+(3,'Air Filter – Baleno','OEM Maruti Baleno',380.00,40,'Maruti Genuine Parts'),
+(4,'LED Headlight Kit H4','Universal LED kit',2300.00,25,'Philips Dealer'),
+(5,'Clutch Plate – Sedan','Clutch plate assembly',3200.00,18,'Valeo Supplier'),
+(6,'Spark Plug (Set of 4)','Copper/Iridium set',620.00,70,'NGK Supplier'),
+(7,'Fuel Filter – Universal','Inline fuel filter',520.00,60,'Bosch Dealer'),
+(8,'Wiper Blade 16"','Single 16-inch blade',210.00,120,'Hella Dealer'),
+(9,'Battery 12V 45Ah','Maintenance free',5400.00,20,'Exide Dealer'),
+(10,'Brake Pad Front – i20','Front pad set i20',1900.00,28,'Hyundai Parts'),
+(11,'Radiator Hose','Rubber hose universal',360.00,50,'Local Supplier'),
+(12,'Alternator Assembly 12V','12V alternator',6600.00,9,'Lucas-TVS Dealer'),
+(13,'Starter Motor – Car','Starter motor',5300.00,8,'Bosch Dealer'),
+(14,'Timing Belt 1.2L','Rubber timing belt',2450.00,22,'Gates Dealer'),
+(15,'Coolant (1L)','Ethylene glycol',360.00,90,'Bosch Dealer'),
+(16,'Cabin Filter','Pollen cabin filter',450.00,35,'OE Supplier'),
+(17,'Rear Brake Shoes','Rear drum shoes',1500.00,26,'TVS-Girish'),
+(18,'AC Gas R134a (Kg)','Refrigerant',780.00,14,'ChemRefrigi'),
+(19,'GPS Tracker Unit','OBD II tracker',2900.00,15,'TrackPro'),
+(20,'Paint – Pearl White (1L)','Automotive paint',1200.00,12,'Asian Auto');
+
+-- ================= FEEDBACK (selected completed bookings) =================
+INSERT INTO feedback (feedback_id, booking_id, rating, comments, created_at) VALUES
+(1,1,5,'Smooth oil change, quick turnaround.','2025-01-05'),
+(2,4,4,'Brakes feel sharp after pad change.','2025-01-10'),
+(3,6,5,'AC cooling noticeably better.','2025-01-15'),
+(4,8,4,'Clutch job done well.','2025-01-19'),
+(5,12,5,'Suspension back to normal, thanks!','2025-01-31'),
+(6,18,5,'Coolant flush solved heating issue.','2025-02-13'),
+(7,28,4,'Paint touchup blends nicely.','2025-03-09'),
+(8,31,5,'Great experience, neat workspace.','2025-03-15'),
+(9,41,5,'Dent repair + paint looks OEM.','2025-04-11'),
+(10,58,4,'Engine feels smoother after service.','2025-05-22'),
+(11,73,5,'On-time and professional.','2025-07-03'),
+(12,90,4,'Engine temp stable now.','2025-08-13'),
+(13,103,5,'Quick service, friendly staff.','2025-09-15'),
+(14,111,4,'Engine overhaul worth it.','2025-10-07'),
+(15,119,5,'GPS install & app setup perfect.','2025-10-26');
+
+COMMIT;
+
+
+SET SESSION sql_mode = REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', '');
