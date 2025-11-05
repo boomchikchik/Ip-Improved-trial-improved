@@ -40,8 +40,7 @@ flowchart LR
 
 ## 3) Table-by-Table (What it stores + Constraints)
 
-**USERS**
-
+**USERS**  
 **Purpose:** All people: Admins, Mechanics, Customers  
 **PK:** `user_id` (INT AUTO_INCREMENT)  
 **Important:** `username` **UNIQUE**, `email` **UNIQUE**, `user_role` ENUM('Admin','Mechanic','Customer') DEFAULT 'Customer'  
@@ -51,18 +50,14 @@ flowchart LR
 - 1 User → N Invoices  
 **Example:** `(1, 'Ravi Sharma', 'ravi12', 'ravi@example.com', ..., 'Customer')`
 
-
-**VEHICLES**
-
+**VEHICLES**  
 **Purpose:** Assets owned by users  
 **PK:** `vehicle_no` (e.g., `GJ-01-AB-1234`)  
 **FK:** `user_id → USERS.user_id` (**ON DELETE CASCADE**)  
 **Why CASCADE?** Vehicle without owner = meaningless  
 **Example:** `('GJ01AB1234', 'Hyundai', 'i20', 'Car', 2)`
 
-
-**SERVICES**
-
+**SERVICES**  
 **Purpose:** Menu of jobs (oil change, paint…)  
 **PK:** `service_id`  
 **Important:** `service_name` **UNIQUE**, `base_price`, `estimated_hours`, `category`  
@@ -70,9 +65,7 @@ flowchart LR
 **Why SET NULL?** Preserve booking history if a service is removed  
 **Example:** `(10, 'Oil Change', '...', 799.00, 1.00, 0, 'Maintenance', 'Active')`
 
-
-**MECHANICS_INFO**
-
+**MECHANICS_INFO**  
 **Purpose:** Mechanics roster  
 **PK:** `mechanic_id`  
 **Referenced by:**  
@@ -81,9 +74,7 @@ flowchart LR
 **Why SET NULL on bookings?** Keep job history if a mechanic leaves  
 **Example:** `(5, 'Anil Mehta', 'Engine', '98xxxxxx12', 'anil@garage.com')`
 
-
-**SERVICE_BOOKINGS (heart)**
-
+**SERVICE_BOOKINGS (heart)**  
 **Purpose:** Each order/job  
 **PK:** `booking_id`  
 **FKs:**  
@@ -95,9 +86,7 @@ flowchart LR
 **Note:** Has both `service_id` (FK) and `service_name` (snapshot) — good for audit/history  
 **Example:** `(101, 'GJ01AB1234', 10, 2, 'Oil Change', 5, '2025-11-06', 'Pending')`
 
-
-**MECHANIC_ASSIGNMENTS**
-
+**MECHANIC_ASSIGNMENTS**  
 **Purpose:** Assignment history / reassignments / multi-helper  
 **PK:** `assignment_id`  
 **FKs:**  
@@ -105,18 +94,14 @@ flowchart LR
 - `mechanic_id → MECHANICS_INFO.mechanic_id` (**ON DELETE CASCADE**)  
 **Example:** `(9001, 101, 5, '2025-11-06 10:00:00')`
 
-
-**INVOICES**
-
+**INVOICES**  
 **Purpose:** Billing  
 **PK:** `invoice_id`  
 **FKs:** `booking_id → SERVICE_BOOKINGS.booking_id`, `user_id → USERS.user_id`  
 **Typical:** 1 Booking → 1 Invoice (enforce with UNIQUE if required)  
 **Example:** `(7001, 101, 2, 799.00, 'Pending', 'UPI', '2025-11-06 12:00:00')`
 
-
-**FEEDBACK**
-
+**FEEDBACK**  
 **Purpose:** Rating/comments per booking  
 **PK:** `feedback_id`  
 **FK:** `booking_id → SERVICE_BOOKINGS.booking_id`  
@@ -124,19 +109,15 @@ flowchart LR
 **Typical:** 0/1 per booking (enforce with UNIQUE if needed)  
 **Example:** `(3001, 101, 5, 'Great service!', '2025-11-07 09:00:00')`
 
-
-**PARTS_INVENTORY**
-
+**PARTS_INVENTORY**  
 **Purpose:** Spare parts stock  
 **PK:** `part_id`  
 **FKs:** none (standalone)  
 **Extend later:** junction `booking_parts(booking_id FK, part_id FK, qty, price_at_use)`
 
-
 ---
 
 ## 4) Cardinality (Beginner English)
-
 - One user → many vehicles  
 - One user → many bookings  
 - One vehicle → many bookings over time  
@@ -148,7 +129,6 @@ flowchart LR
 ---
 
 ## 5) Delete Rules (Exact Effects)
-
 - Delete **USER** → their **VEHICLES** and **BOOKINGS** cascade; dependent **INVOICES/FEEDBACK** tied to those bookings go too  
 - Delete **VEHICLE** → its **BOOKINGS** (and their invoices/feedback/assignments) cascade  
 - Delete **SERVICE** → `SERVICE_BOOKINGS.service_id` becomes **NULL** (history preserved)  
@@ -158,6 +138,6 @@ flowchart LR
 ---
 
 ## 6) Why Some FKs Are NULLable
-
 - `service_id` in bookings: service catalog item may be removed later → keep booking; set FK to **NULL** (but `service_name` snapshot remains).  
 - `mechanic_id` in bookings: mechanic may leave → keep booking; set FK to **NULL**.
+
