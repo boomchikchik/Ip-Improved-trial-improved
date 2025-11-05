@@ -38,7 +38,6 @@ flowchart LR
   classDef link fill:#ecfdf5,stroke:#059669,stroke-width:1px;
 
 
-## 3) Table-by-Table (What it stores + Constraints)
 
 **USERS**  
 **Purpose:** All people: Admins, Mechanics, Customers  
