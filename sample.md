@@ -38,105 +38,112 @@ flowchart LR
   classDef link fill:#ecfdf5,stroke:#059669,stroke-width:1px;
 
 
+---
 
-**USERS**  
-**Purpose:** All people: Admins, Mechanics, Customers  
-**PK:** `user_id` (INT AUTO_INCREMENT)  
-**Important:** `username` **UNIQUE**, `email` **UNIQUE**, `user_role` ENUM('Admin','Mechanic','Customer') DEFAULT 'Customer'  
-**Relationships:**  
-- 1 User → N Vehicles  
-- 1 User → N Service Bookings  
-- 1 User → N Invoices  
-**Example:** `(1, 'Ravi Sharma', 'ravi12', 'ravi@example.com', ..., 'Customer')`
+## 3) 🛠️ Table-by-Table: Structure and Constraints
 
-**VEHICLES**  
-**Purpose:** Assets owned by users  
-**PK:** `vehicle_no` (e.g., `GJ-01-AB-1234`)  
-**FK:** `user_id → USERS.user_id` (**ON DELETE CASCADE**)  
-**Why CASCADE?** Vehicle without owner = meaningless  
-**Example:** `('GJ01AB1234', 'Hyundai', 'i20', 'Car', 2)`
+This section provides a detailed breakdown of each table's purpose, keys, and important constraints.
 
-**SERVICES**  
-**Purpose:** Menu of jobs (oil change, paint…)  
-**PK:** `service_id`  
-**Important:** `service_name` **UNIQUE**, `base_price`, `estimated_hours`, `category`  
-**Referenced by:** `SERVICE_BOOKINGS.service_id` (**NULL, ON DELETE SET NULL**)  
-**Why SET NULL?** Preserve booking history if a service is removed  
-**Example:** `(10, 'Oil Change', '...', 799.00, 1.00, 0, 'Maintenance', 'Active')`
+### USERS
+* **Purpose:** Stores all system users (Admins, Mechanics, Customers).
+* **PK:** `user_id` (INT AUTO_INCREMENT)
+* **Constraints:** `username` **UNIQUE**, `email` **UNIQUE**, `user_role` ENUM('Admin','Mechanic','Customer') DEFAULT 'Customer'
+* **Relationships:** One User → N Vehicles, N Service Bookings, N Invoices.
+* **Example:** `(1, 'Ravi Sharma', 'ravi12', 'ravi@example.com', ..., 'Customer')`
 
-**MECHANICS_INFO**  
-**Purpose:** Mechanics roster  
-**PK:** `mechanic_id`  
-**Referenced by:**  
-- `SERVICE_BOOKINGS.mechanic_id` (**NULL, ON DELETE SET NULL**)  
-- `MECHANIC_ASSIGNMENTS.mechanic_id` (**ON DELETE CASCADE**)  
-**Why SET NULL on bookings?** Keep job history if a mechanic leaves  
-**Example:** `(5, 'Anil Mehta', 'Engine', '98xxxxxx12', 'anil@garage.com')`
+### VEHICLES
+* **Purpose:** Assets owned by users.
+* **PK:** `vehicle_no` (e.g., `GJ-01-AB-1234`)
+* **FK:** `user_id` → `USERS.user_id` (**ON DELETE CASCADE**)
+* **Rationale:** A vehicle is meaningless without an owner.
+* **Example:** `('GJ01AB1234', 'Hyundai', 'i20', 'Car', 2)`
 
-**SERVICE_BOOKINGS (heart)**  
-**Purpose:** Each order/job  
-**PK:** `booking_id`  
-**FKs:**  
-- `vehicle_no → VEHICLES.vehicle_no` (**ON DELETE CASCADE**)  
-- `service_id → SERVICES.service_id` (**NULL, ON DELETE SET NULL**)  
-- `user_id → USERS.user_id` (**ON DELETE CASCADE**)  
-- `mechanic_id → MECHANICS_INFO.mechanic_id` (**NULL, ON DELETE SET NULL**)  
-**Status:** ENUM('Pending','In Progress','Completed','Cancelled')  
-**Note:** Has both `service_id` (FK) and `service_name` (snapshot) — good for audit/history  
-**Example:** `(101, 'GJ01AB1234', 10, 2, 'Oil Change', 5, '2025-11-06', 'Pending')`
+### SERVICES
+* **Purpose:** Menu of available services (oil change, paint, etc.).
+* **PK:** `service_id`
+* **Constraints:** `service_name` **UNIQUE**, `base_price`, `estimated_hours`, `category`
+* **Referenced by:** `SERVICE_BOOKINGS.service_id` (**NULL, ON DELETE SET NULL**)
+* **Rationale:** Preserves booking history if a service is removed.
+* **Example:** `(10, 'Oil Change', '...', 799.00, 1.00, 0, 'Maintenance', 'Active')`
 
-**MECHANIC_ASSIGNMENTS**  
-**Purpose:** Assignment history / reassignments / multi-helper  
-**PK:** `assignment_id`  
-**FKs:**  
-- `booking_id → SERVICE_BOOKINGS.booking_id` (**ON DELETE CASCADE**)  
-- `mechanic_id → MECHANICS_INFO.mechanic_id` (**ON DELETE CASCADE**)  
-**Example:** `(9001, 101, 5, '2025-11-06 10:00:00')`
+### MECHANICS\_INFO
+* **Purpose:** Roster of mechanics.
+* **PK:** `mechanic_id`
+* **Referenced by:**
+    * `SERVICE_BOOKINGS.mechanic_id` (**NULL, ON DELETE SET NULL**)
+    * `MECHANIC_ASSIGNMENTS.mechanic_id` (**ON DELETE CASCADE**)
+* **Rationale:** Uses SET NULL on bookings to keep job history, but CASCADE on assignments to remove work schedule history.
+* **Example:** `(5, 'Anil Mehta', 'Engine', '98xxxxxx12', 'anil@garage.com')`
 
-**INVOICES**  
-**Purpose:** Billing  
-**PK:** `invoice_id`  
-**FKs:** `booking_id → SERVICE_BOOKINGS.booking_id`, `user_id → USERS.user_id`  
-**Typical:** 1 Booking → 1 Invoice (enforce with UNIQUE if required)  
-**Example:** `(7001, 101, 2, 799.00, 'Pending', 'UPI', '2025-11-06 12:00:00')`
+### SERVICE\_BOOKINGS (The Heart of the System)
+* **Purpose:** Each customer order/job record.
+* **PK:** `booking_id`
+* **FKs:**
+    * `vehicle_no` → `VEHICLES.vehicle_no` (**ON DELETE CASCADE**)
+    * `service_id` → `SERVICES.service_id` (**NULL, ON DELETE SET NULL**)
+    * `user_id` → `USERS.user_id` (**ON DELETE CASCADE**)
+    * `mechanic_id` → `MECHANICS_INFO.mechanic_id` (**NULL, ON DELETE SET NULL**)
+* **Status:** ENUM('Pending','In Progress','Completed','Cancelled')
+* **Note:** Stores both FK (`service_id`) and a snapshot of the service name (`service_name`) for historical audit.
+* **Example:** `(101, 'GJ01AB1234', 10, 2, 'Oil Change', 5, '2025-11-06', 'Pending')`
 
-**FEEDBACK**  
-**Purpose:** Rating/comments per booking  
-**PK:** `feedback_id`  
-**FK:** `booking_id → SERVICE_BOOKINGS.booking_id`  
-**Constraint:** `rating` CHECK 1..5 (MySQL 8+)  
-**Typical:** 0/1 per booking (enforce with UNIQUE if needed)  
-**Example:** `(3001, 101, 5, 'Great service!', '2025-11-07 09:00:00')`
+### MECHANIC\_ASSIGNMENTS
+* **Purpose:** Tracking assignment history, reassignments, or multiple mechanics per job.
+* **PK:** `assignment_id`
+* **FKs:**
+    * `booking_id` → `SERVICE_BOOKINGS.booking_id` (**ON DELETE CASCADE**)
+    * `mechanic_id` → `MECHANICS_INFO.mechanic_id` (**ON DELETE CASCADE**)
+* **Example:** `(9001, 101, 5, '2025-11-06 10:00:00')`
 
-**PARTS_INVENTORY**  
-**Purpose:** Spare parts stock  
-**PK:** `part_id`  
-**FKs:** none (standalone)  
-**Extend later:** junction `booking_parts(booking_id FK, part_id FK, qty, price_at_use)`
+### INVOICES
+* **Purpose:** Billing records.
+* **PK:** `invoice_id`
+* **FKs:** `booking_id` → `SERVICE_BOOKINGS.booking_id`, `user_id` → `USERS.user_id`
+* **Typical Constraint:** 1 Booking → 1 Invoice (can be enforced with a UNIQUE constraint on `booking_id`).
+* **Example:** `(7001, 101, 2, 799.00, 'Pending', 'UPI', '2025-11-06 12:00:00')`
+
+### FEEDBACK
+* **Purpose:** Captures ratings and comments per booking.
+* **PK:** `feedback_id`
+* **FK:** `booking_id` → `SERVICE_BOOKINGS.booking_id`
+* **Constraints:** `rating` CHECK 1..5 (MySQL 8+).
+* **Typical Constraint:** 0/1 per booking (can be enforced with a UNIQUE constraint on `booking_id`).
+* **Example:** `(3001, 101, 5, 'Great service!', '2025-11-07 09:00:00')`
+
+### PARTS\_INVENTORY
+* **Purpose:** Spare parts stock management.
+* **PK:** `part_id`
+* **FKs:** none (standalone).
+* **Extension Note:** Future extension requires a junction table (e.g., `booking_parts`) to link parts used to a specific booking.
 
 ---
 
-## 4) Cardinality (Beginner English)
-- One user → many vehicles  
-- One user → many bookings  
-- One vehicle → many bookings over time  
-- One service → many bookings (if service deleted → old bookings keep `service_id = NULL`)  
-- One mechanic → many bookings (if mechanic deleted → old bookings keep `mechanic_id = NULL`)  
-- One booking → usually one invoice and zero/one feedback  
-- One booking → many mechanic_assignments (timeline/history)
+## 4) ↔️ Cardinality (In Simple Terms)
+
+* **One user** has **many vehicles** and **many bookings**.
+* **One vehicle** can have **many bookings** over its lifetime.
+* **One service** is used by **many bookings** (if service deleted, old bookings keep `service_id = NULL`).
+* **One mechanic** is assigned to **many bookings** (if mechanic deleted, old bookings keep `mechanic_id = NULL`).
+* **One booking** usually generates **one invoice** and receives **zero or one feedback**.
+* **One booking** can have **many mechanic\_assignments** (for history or multiple helpers).
 
 ---
 
-## 5) Delete Rules (Exact Effects)
-- Delete **USER** → their **VEHICLES** and **BOOKINGS** cascade; dependent **INVOICES/FEEDBACK** tied to those bookings go too  
-- Delete **VEHICLE** → its **BOOKINGS** (and their invoices/feedback/assignments) cascade  
-- Delete **SERVICE** → `SERVICE_BOOKINGS.service_id` becomes **NULL** (history preserved)  
-- Delete **MECHANIC** → `SERVICE_BOOKINGS.mechanic_id` becomes **NULL**; `MECHANIC_ASSIGNMENTS` for that mechanic **CASCADE delete**  
-- Delete **BOOKING** → related **INVOICES**, **FEEDBACK**, and **MECHANIC_ASSIGNMENTS** are deleted
+## 5) 💥 Delete Rules (Exact Effects)
+
+This outlines the precise consequence of deleting a primary record due to `ON DELETE` constraints.
+
+* Delete **USER** → their **VEHICLES** and **BOOKINGS** **CASCADE**; dependent **INVOICES** and **FEEDBACK** tied to those bookings are deleted too.
+* Delete **VEHICLE** → its **BOOKINGS** (and their invoices/feedback/assignments) **CASCADE**.
+* Delete **SERVICE** → `SERVICE_BOOKINGS.service_id` becomes **NULL** (history preserved via `service_name` snapshot).
+* Delete **MECHANIC** → `SERVICE_BOOKINGS.mechanic_id` becomes **NULL**; **MECHANIC\_ASSIGNMENTS** for that mechanic **CASCADE** delete.
+* Delete **BOOKING** → related **INVOICES**, **FEEDBACK**, and **MECHANIC\_ASSIGNMENTS** are deleted.
 
 ---
 
-## 6) Why Some FKs Are NULLable
-- `service_id` in bookings: service catalog item may be removed later → keep booking; set FK to **NULL** (but `service_name` snapshot remains).  
-- `mechanic_id` in bookings: mechanic may leave → keep booking; set FK to **NULL**.
+## 6) ❓ Why Some FKs Are NULLable
 
+The `NULL` allowance in `SERVICE_BOOKINGS` is a deliberate design choice to ensure auditability:
+
+* **`service_id` in bookings:** Allows the service catalog item to be removed later without deleting the historical booking record. The descriptive `service_name` snapshot preserves what was done.
+* **`mechanic_id` in bookings:** Allows a mechanic to leave the system (be deleted) without losing the historical record of the job itself. The record simply shows the job was completed but the mechanic is no longer in the roster.
