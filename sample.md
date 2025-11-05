@@ -38,10 +38,7 @@ flowchart LR
   classDef link fill:#ecfdf5,stroke:#059669,stroke-width:1px;
 
 
-
-
-
-  ## 3) Table-by-Table (What it stores + Constraints)
+## 3) Table-by-Table (What it stores + Constraints)
 
 **USERS**
 
@@ -154,5 +151,13 @@ flowchart LR
 
 - Delete **USER** → their **VEHICLES** and **BOOKINGS** cascade; dependent **INVOICES/FEEDBACK** tied to those bookings go too  
 - Delete **VEHICLE** → its **BOOKINGS** (and their invoices/feedback/assignments) cascade  
-- Delete **SERVICE** → `SERVICE_BOO_
+- Delete **SERVICE** → `SERVICE_BOOKINGS.service_id` becomes **NULL** (history preserved)  
+- Delete **MECHANIC** → `SERVICE_BOOKINGS.mechanic_id` becomes **NULL**; `MECHANIC_ASSIGNMENTS` for that mechanic **CASCADE delete**  
+- Delete **BOOKING** → related **INVOICES**, **FEEDBACK**, and **MECHANIC_ASSIGNMENTS** are deleted
 
+---
+
+## 6) Why Some FKs Are NULLable
+
+- `service_id` in bookings: service catalog item may be removed later → keep booking; set FK to **NULL** (but `service_name` snapshot remains).  
+- `mechanic_id` in bookings: mechanic may leave → keep booking; set FK to **NULL**.
