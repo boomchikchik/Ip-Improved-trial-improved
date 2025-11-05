@@ -36,3 +36,19 @@ flowchart LR
 
   classDef entity fill:#eef6ff,stroke:#1f6feb,stroke-width:1px;
   classDef link fill:#ecfdf5,stroke:#059669,stroke-width:1px;
+
+
+
+
+
+Parent Table (1),Child Table (N),Foreign Key (FK),Relationship Type,ON DELETE Rule,Notes
+USERS,VEHICLES,user_id,One-to-Many,CASCADE,Vehicle must have an owner.
+USERS,SERVICE_BOOKINGS,user_id,One-to-Many,CASCADE,Booking is deleted if user is deleted.
+VEHICLES,SERVICE_BOOKINGS,vehicle_no,One-to-Many,CASCADE,Booking without vehicle is meaningless.
+SERVICES,SERVICE_BOOKINGS,service_id,One-to-Many,SET NULL,Preserves booking history if service is deprecated.
+MECHANICS_INFO,SERVICE_BOOKINGS,mechanic_id,One-to-Many,SET NULL,Preserves job history if mechanic leaves.
+MECHANICS_INFO,MECHANIC_ASSIGNMENTS,mechanic_id,One-to-Many,CASCADE,Assignments are deleted if mechanic leaves.
+SERVICE_BOOKINGS,MECHANIC_ASSIGNMENTS,booking_id,One-to-Many,CASCADE,Assignment deleted if the booking is deleted.
+SERVICE_BOOKINGS,INVOICES,booking_id,One-to-One/Many,Default,Invoice is tied directly to the job.
+SERVICE_BOOKINGS,FEEDBACK,booking_id,One-to-Zero/One,Default,Feedback is tied directly to the job.
+USERS,INVOICES,user_id,One-to-Many,Default,Invoice tied to customer for audit.
