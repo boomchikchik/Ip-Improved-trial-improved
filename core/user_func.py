@@ -7,6 +7,7 @@ from db.queries_sql import engcon
 from styles import *
 from core.utils_cli import *
 
+
 # ================== VALIDATION ==================
 def get_value(prompt):
     while True:
@@ -28,22 +29,15 @@ def get_password():
 # ================== AUTH ==================
 def user_registration():
     print("\n🧾 USER REGISTRATION")
-
-    name = get_value("Name: ")
-    email = get_value("Email: ")
-    phone = get_value("Phone: ")
-    address = get_value("Address: ")
-    city = get_value("City: ")
-    state = get_value("State: ")
-    username = get_value("Username: ")
-    password = get_value("Password: ")
-
+    fields = ['Name', 'Email', 'Phone', 'Address', 'City', 'State', 'Username']
+    data = get_inputs(fields, required=True)
+    data['Password'] = get_password()
     exec_sql("""
         INSERT INTO users(name, email, phone, address, city, state, username, password, user_role)
         VALUES(%s,%s,%s,%s,%s,%s,%s,%s,'Customer')
-    """, (name, email, phone, address, city, state, username, password))
+    """, tuple(data.values()))
+    print(f"{BRIGHT_GREEN}✅ Registration Successful!")
 
-    print("✅ Registration Successful!")
 
 def user_login():
     print(f"{BRIGHT_CYAN}\n🔐 USER LOGIN")
@@ -91,24 +85,26 @@ def user_dashboard(df):
 # ================== PROFILE ==================
 def manage_profile(uid):
     df = fetch_df("SELECT name,email,phone,address,city,state,username FROM users WHERE user_id=%s", (uid,))
+    series = df.squeeze() # Convert single-row DataFrame to Series
     print(f"\n{BRIGHT_CYAN}Your Profile:\n{df.iloc[0].to_string()}")
     action = menu_box("Profile Management", {"1": "Edit Profile", "2": "Change Password", "0": "Back"}, prompt="Select an option: ")
     # action = input(f"\n{BRIGHT_YELLOW}1=Edit Profile, 2=Change Password, 0=Back: ").strip()
     if action == "1":
-        row = df.iloc[0]
-        updates = {}
-        for k in ['name','email','phone','address','city','state']:
-            new_value = input(f"{k.title()} OLD VALUE: {row[k]}: ").strip()
-            updates[k] = new_value if new_value else row[k]
+        fields = ['name', 'email', 'phone', 'address', 'city', 'state']
+        for field in fields:
+            print(f"{BRIGHT_YELLOW} ENTER NEW {field.replace('_',' ').title()} (leave blank to keep current: [{series.get(field)}]): ")
+            val = input().strip()
+            if val:
+                sql = f"UPDATE users SET {field}=%s WHERE user_id=%s"
+                exec_sql(sql, (val, uid), success=f"{BRIGHT_GREEN}✅ Updated {field}.")
 
-        exec_sql("UPDATE users SET name=%s,email=%s,phone=%s,address=%s,city=%s,state=%s WHERE user_id=%s",
-                 (*updates.values(), uid), success=f"{BRIGHT_GREEN}✅ Profile updated.")
     elif action == "2":
         old = stdiomask.getpass("Old Password: ")
         if fetch_df("SELECT 1 FROM users WHERE user_id=%s AND password=%s", (uid, old)).empty:
             print(f"{BRIGHT_RED}❌ Wrong password.")
         else:
-            exec_sql("UPDATE users SET password=%s WHERE user_id=%s", (get_password(), uid), success=f"{BRIGHT_GREEN}✅ Password changed.")
+            pwd = get_password()
+            exec_sql("UPDATE users SET password=%s WHERE user_id=%s", (pwd, uid), success=f"{BRIGHT_GREEN}✅ Password changed.")
 
 # ================== VEHICLES ==================
 def add_vehicle(uid):

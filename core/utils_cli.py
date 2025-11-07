@@ -6,6 +6,21 @@ from tabulate import tabulate
 from db.queries_sql import mycon, cursor, engcon
 from styles import *
 
+# ================== HELPERS ==================
+def get_inputs(fields, prompt=":",required=False):
+    """Get multiple inputs from user as a dictionary
+    IT CREATES A TEMPRORARY MEMORY MAPPED DATA TO LATER INSERT INTO DB OR UPDATE
+    I HAVE USED IT 10 TIMES IN PROJECT SAVING MANY LINES OF CODE """
+    result = {}
+    for field in fields:
+        field_label = field.replace('_', ' ').title()
+        user_input = input(f"{BRIGHT_YELLOW}{field_label} {prompt} ").strip()
+        if user_input or not required:
+            result[field] = user_input
+        else:
+            print(f"{BRIGHT_RED}❌ {field_label} is required./n {prompt}")
+            return get_inputs(fields, prompt, required)
+    return result
 
 def pause(msg="Press Enter to continue..."):
     """Pause execution until user presses Enter"""
@@ -13,7 +28,6 @@ def pause(msg="Press Enter to continue..."):
         input(f"{DIM_YELLOW}{msg}")
     except EOFError: 
         pass
-
 
 def fetch_df(sql, params=None):
     """Execute SQL query and return DataFrame"""
@@ -67,12 +81,15 @@ def menu_box(title, options, prompt="Select an option: "):
     
     return input(f"{BRIGHT_CYAN}{prompt}").strip()
 
+
 def dashboard_loop(title, options):
     """Generic dashboard loop handler"""
     while True:
         choice = menu_box(title, {k: subtitle[0] for k, subtitle in options.items()})
-        func = options.get(choice)[1]
-        
+        try: 
+            func = options.get(choice)[1]
+        except:
+            func = False
         if func:
             func()
         elif choice == "0" or func is None:
