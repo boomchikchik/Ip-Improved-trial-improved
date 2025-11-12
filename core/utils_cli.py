@@ -3,38 +3,38 @@
 # =====================================================
 import pandas as pd
 from tabulate import tabulate
-from db.queries_sql import mycon, cursor, engcon
+from db.sql_connect import mycon, cursor, engcon
 from styles import *
 
 # ================== HELPERS ==================
-def get_inputs(fields, prompt=":",required=False):
+def get_inputs(fields: list, prompt=":",required=False): # returns dict {field:input_value}
     """Get multiple inputs from user as a dictionary
     IT CREATES A TEMPRORARY MEMORY MAPPED DATA TO LATER INSERT INTO DB OR UPDATE
     I HAVE USED IT 10 TIMES IN PROJECT SAVING MANY LINES OF CODE """
     result = {}
     for field in fields:
         field_label = field.replace('_', ' ').title()
-        user_input = input(f"{BRIGHT_YELLOW}{field_label} {prompt} ").strip()
+        user_input = input(f"{B_Y}{field_label} {prompt} ").strip()
         if user_input or not required:
             result[field] = user_input
         else:
-            print(f"{BRIGHT_RED}❌ {field_label} is required./n {prompt}")
+            print(f"{B_R}❌ {field_label} is required./n {prompt}")
             return get_inputs(fields, prompt, required)
     return result
 
 def pause(msg="Press Enter to continue..."):
     """Pause execution until user presses Enter"""
     try: 
-        input(f"{DIM_YELLOW}{msg}")
+        input(f"{D_Y}{msg}")
     except EOFError: 
         pass
 
-def fetch_df(sql, params=None):
+def fetch_df(sql, params=None): #Helps Fetching DataFrame
     """Execute SQL query and return DataFrame"""
     try:
         return pd.read_sql(sql, con=engcon, params=params) if params else pd.read_sql(sql, con=engcon)
     except Exception as e:
-        print(f"{BRIGHT_RED}DB Error: {e}")
+        print(f"{B_R}DB Error: {e}")
         return pd.DataFrame()
 
 
@@ -43,11 +43,11 @@ def exec_sql(sql, params=None, success="✅ Done."):
     try:
         cursor.execute(sql, params or ())
         mycon.commit()
-        print(f"{BRIGHT_GREEN}{success}")
+        print(f"{B_G}{success}")
         return True
     except Exception as e:
         mycon.rollback()
-        print(f"{BRIGHT_RED}DB Error: {e}")
+        print(f"{B_R}DB Error: {e}")
         return False
 
 
@@ -57,11 +57,11 @@ def show_table(sql, params=None, title=None,hide_cols=None,df_=None):
     if hide_cols:
         df = df.drop(columns=[c for c in hide_cols], errors='ignore')
     if df.empty:
-        print(f"{BRIGHT_RED}No records found.")
+        print(f"{B_R}No records found.")
         return False  
     else:
         if title: 
-            print(f"\n{BRIGHT_CYAN}{title}")
+            print(f"\n{B_C}{title}")
         print(tabulate(df, headers="keys", tablefmt="fancy_grid", showindex=False))
     pause()
     return True
@@ -69,18 +69,19 @@ def show_table(sql, params=None, title=None,hide_cols=None,df_=None):
 
 def menu_box(title, options, prompt="Select an option: "):
     """Display menu and get user choice"""
-    print(f"\n{BRIGHT_YELLOW}{title}") if title else ""
+    print(f"\n{B_Y}{title}") if title else ""
     
     if isinstance(options, list):
         print(tabulate([[opt] for opt in options], tablefmt="fancy_grid"))
     elif isinstance(options, dict):
         print(tabulate([[f"{k}. {v}"] for k, v in options.items()], tablefmt="fancy_grid"))
     else:
-        print(f"{BRIGHT_RED}Invalid options format.")
+        print(f"{B_R}Invalid options format.")
         return None
     
-    return input(f"{BRIGHT_CYAN}{prompt}").strip()
+    return input(f"{B_C}{prompt}").strip()
 
+#THE KEY DIFFERENCE BETWEEN dashboard_loop and menu_loop is that dashboard_loop KEEPS THE LOOP TILL USER WANTS TO EXIT WHILE menu_loop RETURNS AFTER ONE CHOICE and menu_loop CAN BE USED INSIDE DASHBOARD_LOOP, allowing nested menus.
 
 def dashboard_loop(title, options):
     """Generic dashboard loop handler"""
@@ -93,21 +94,33 @@ def dashboard_loop(title, options):
         if func:
             func()
         elif choice == "0" or func is None:
-            print(f"{BRIGHT_MAGENTA}↩ Back to previous menu.")
+            print(f"{B_M}↩ Back to previous menu.")
             break
         else:
-            print(f"{BRIGHT_RED}❌ Invalid choice.")
+            print(f"{B_R}❌ Invalid choice.")
+
+#WORKING OF DASHBOARD_LOOP:
+# 1. vo TITLE lega , option ek dict hogi jiska format hoga {1:("subtitle",function_to_call),2:("subtitle2",function2)}
+# menu_box ko call karke title aur options dict se subtitle nikalke menu dikhayega
+# k jo hai vo 1,2,3.. hoga aur subtitle poora tuple hai (subtitle,function_to_call) jaise hi user choice karega vo choice variable me ayega
+# k ko as it is rehne denge aur tutple me se subtitle extract karke new dict ko menu_box ko denge jisse tabulate me sirf subtitle hi dikhai dega
+# 2. YE UPAR KA SAB TAM JAM WHILE TRUE LOOP ME CHALEGA
+# 3. menu_box ko call karke user se choice lega, user ka choice dashboard_loop me function ko milega options dict se
+# 4. TRY BLOCK MEIN OPTIONS DICT SE FUNCTION NIKALEGA JO USER NE CHUNA HOGA
+# 5. AGAR FUNCTION MILEGA TOH USSE CALL KAREGA
+# 6. AGAR USER "0" CHUNEGA YA FUNCTION NONE HOGA TOH BACK MESSAGE DEKE LOOP BREAK KAREGA
+# 7. AGAR KUCHH BHI INVALID HOGA TOH ERROR MESSAGE DEKE LOOP CONTINUE KAREGA
 
 
+# FOR PASSWORD ENCRYPTION, NOT USED CURRENTLY
+"""
+import bcrypt
 
+# Hash
+hashed = bcrypt.hashpw(b"mypassword", bcrypt.gensalt())
 
-# import bcrypt
-
-# # Hash
-# hashed = bcrypt.hashpw(b"mypassword", bcrypt.gensalt())
-
-# # Check
-# bcrypt.checkpw(b"mypassword", hashed)
+# Check
+bcrypt.checkpw(b"mypassword", hashed)"""
 
 
 # # core/utils_cli.py
@@ -117,7 +130,7 @@ def dashboard_loop(title, options):
 # from styles import *
 
 # def pause(msg="Press Enter to continue..."):
-#     try: input(f"{DIM_YELLOW}{msg}")
+#     try: input(f"{D_Y}{msg}")
 #     except EOFError: pass
 
 # def fetch_df(sql, params=None):
@@ -127,7 +140,7 @@ def dashboard_loop(title, options):
 #         else:
 #             return pd.read_sql(sql, con=engcon)
 #     except Exception as e:
-#         print(f"{BRIGHT_RED}DB Error: {e}")
+#         print(f"{B_R}DB Error: {e}")
 #         return pd.DataFrame()
 
 
@@ -137,33 +150,33 @@ def dashboard_loop(title, options):
 #     try:
 #         cursor.execute(sql, params or ())
 #         mycon.commit()
-#         print(f"{BRIGHT_GREEN}{ok}")
+#         print(f"{B_G}{ok}")
 #         return True
 #     except Exception as e:
 #         mycon.rollback()
-#         print(f"{BRIGHT_RED}DB Error: {e}")
+#         print(f"{B_R}DB Error: {e}")
 #         return False
 
 # def show_table(sql, params=None, title=None):
 #     df = fetch_df(sql, params)
 #     if df.empty:
-#         print(f"{BRIGHT_RED}No records found.")
+#         print(f"{B_R}No records found.")
 #     else:
-#         if title: print(f"\n{BRIGHT_CYAN}{title}")
+#         if title: print(f"\n{B_C}{title}")
 #         print(tabulate(df, headers="keys", tablefmt="fancy_grid", showindex=False))
 #     pause()
 #     return df
 
 # def menu_box(title, options, prompt="Select an option: "): #--> k is 1,2,3... and v is title for menu [[]] each nested list is for new row
-#     print(f"\n{BRIGHT_YELLOW}{title}")
+#     print(f"\n{B_Y}{title}")
 #     if type(options) is list:
 #         print(tabulate([[i] for i in options], tablefmt="fancy_grid"))
 #     elif type(options) is dict:
 #         print(tabulate([[k + ". " + v] for k, v in options.items()], tablefmt="fancy_grid"))
 #     else:
-#         print(f"{BRIGHT_RED}Invalid options format.")
+#         print(f"{B_R}Invalid options format.")
 #         return None
-#     return input(f"{BRIGHT_CYAN}{prompt}").strip()
+#     return input(f"{B_C}{prompt}").strip()
 
 # def dashboard_loop(title, options):
 #     while True:
@@ -175,4 +188,4 @@ def dashboard_loop(title, options):
 #             print(f"{BRIGHT_MAGENTA}↩ Back to previous menu.")
 #             break
 #         else:
-#             print(f"{BRIGHT_RED}❌ Invalid choice.")
+#             print(f"{B_R}❌ Invalid choice.")

@@ -2,27 +2,27 @@ import mysql.connector as sql
 from sqlalchemy import create_engine
 import pymysql
 import time
-from styles import BRIGHT_GREEN as BG, BRIGHT_RED as BR
+from styles import B_G, B_R
 
 # Creating a database
 def create_database(mycon):
     cursor = mycon.cursor()
     cursor.execute("CREATE DATABASE IF NOT EXISTS vehiclemanagement")
-    print(f"{BG}Database 'vehiclemanagement' ensured.")
+    print(f"{B_G}Database 'vehiclemanagement' ensured.")
     mycon.close()
 
 def sql_connect():
     try:
-        print(f"{BG}Trying initial connection...")
+        print(f"{B_G}Trying initial connection...")
         mycon = sql.connect(host="localhost", user="root", password="123456")
         create_database(mycon)
     except sql.Error as e:
-        print(f"{BR}🔥 SQL Error during initial connection: {e}")
+        print(f"{B_R}🔥 SQL Error during initial connection: {e}")
         raise
 
-    print(f"{BG}Connecting to DB vehiclemanagement...")
+    print(f"{B_G}Connecting to DB vehiclemanagement...")
     mycon = sql.connect(host="localhost", user="root", password="123456", database="vehiclemanagement")
-    print(f"{BG}DB PERMANENT connection established.")
+    print(f"{B_G}DB PERMANENT connection established.")
     cursor = mycon.cursor()
     mycon.autocommit = False  # You must commit/rollback manually
     mycon.start_transaction(isolation_level='READ COMMITTED')  # Prevents dirty reads
@@ -35,12 +35,10 @@ def sql_connect():
     engcon = engine.connect()
     return mycon, cursor, engine, engcon
 
-# Remove this call from global scope and call in your main script instead:
-# mycon, cursor, engine, engcon = sql_connect()
 try:
     mycon, cursor, engine, engcon = sql_connect()
-    print(f"{BG}Database connection ready....")
+    print(f"{B_G}Database connection ready....")
     time.sleep(3)
 except Exception as e:
-    print(f"{BR}Failed to connect to database: {e}")
+    print(f"{B_R}Failed to connect to database: {e}")
     exit(1)
